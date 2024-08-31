@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operaciones con Kilos de Novillo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay loop muted>
+            <source src="./img/video.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="content">
+        <h1>Operaciones con Kilos de Novillo</h1>
+        <div id="usuario">
+            <p>Ingrese su nombre:</p>
+            <input id="nombre" placeholder="Nombre">
+            <button id="guardar-nombre">Guardar Nombre</button>
+        </div>
+
+        <div id="valorIn" style="display:none;">
+            <p>Ingrese el valor actual del kilo de novillo:</p>
+            <input id="valorKg" placeholder="Valor del Kilo">
+            <p>Ingrese cuántos kilos se cobran por hora:</p>
+            <input id="kgPorHora" placeholder="Kilos por Hora">
+            <button id="guardar-valores">Guardar Valores</button>
+        </div>
+
+        <div id="operaciones" style="display:none;">
+            <h2>Hola, <span id="usuario-nombre"></span></h2>
+            <button id="botonIngreso">Ingreso</button>
+            <button id="botonEgreso">Egreso</button>
+
+            <div id="formulario-operacion" style="display:none;">
+                <p>Seleccione la opción deseada:</p>
+                <p>1 - Por horas trabajadas</p>
+                <p>2 - Por kilos</p>
+                <p>3 - Por pesos</p>
+                <input type="text" id="opcion" placeholder="Ingrese 1, 2 o 3">
+                <input type="text" id="valor" placeholder="Ingrese el valor">
+                <button id="realizar-operacion">Realizar Operación</button>
+            </div>
+        </div>
+
+        <div id="movimientos"></div>
+
+        <h3>Kilos Totales: <span id="kg-totales">0.00</span></h3>
+        <button id="finalizar-movimientos" style="display:none;">Finalizar Movimientos</button>
+    </div>
+
+    <audio id="sonido-operacion" src="./img/vacas.mp3"></audio>
+    <script src="index.js"></script>
+</body>
+</html>
