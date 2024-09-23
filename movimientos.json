@@ -1,0 +1,10 @@
+{
+    "movimientos": [
+      {
+        "tipo": "Ingreso",
+        "kg": 24,
+        "descripcion": "Jornada laboral de 8 horas"
+      }
+    ]
+  }
+  

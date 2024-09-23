@@ -12,105 +12,150 @@ const valorInputDiv = document.getElementById('valorIn');
 const finalizarMovimientosBtn = document.getElementById('finalizar-movimientos');
 const sonidoOperacion = document.getElementById('sonido-operacion');
 
-document.getElementById('guardar-nombre').addEventListener('click', () => {
-    const nombre = document.getElementById('nombre').value;
-    if (nombre !== "") {
-        userNameSpan.textContent = nombre;
-        document.getElementById('usuario').style.display = 'none';
-        valorInputDiv.style.display = 'block';
+function cargarDatosDesdeJson() {
+    fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); 
+        })
+        .catch(error => console.error('Error cargando el JSON:', error));
+}
+
+cargarDatosDesdeJson();
+
+document.getElementById("guardar-nombre").addEventListener("click", function() {
+    const nombre = document.getElementById("nombre").value;
+    if (nombre) {
+        document.getElementById("usuario-nombre").textContent = nombre;
+        document.getElementById("usuario").style.display = "none";
+        document.getElementById("valorIn").style.display = "block";
+    } else {
+        Swal.fire("Por favor ingrese su nombre.");
     }
 });
 
-document.getElementById('guardar-valores').addEventListener('click', () => {
-    valorKg = parseFloat(document.getElementById('valorKg').value);
-    kgPorHora = parseFloat(document.getElementById('kgPorHora').value);
-    if (valorKg > 0 && kgPorHora > 0) {
-        valorInputDiv.style.display = 'none';
-        operacionesDiv.style.display = 'block';
+document.getElementById("guardar-valores").addEventListener("click", function() {
+    const valorKg = document.getElementById("valorKg").value;
+    const kgPorHora = document.getElementById("kgPorHora").value;
+    if (valorKg && kgPorHora) {
+        document.getElementById("valorIn").style.display = "none";
+        document.getElementById("operaciones").style.display = "block";
+    } else {
+        Swal.fire("Por favor ingrese ambos valores.");
     }
 });
 
-document.getElementById('botonIngreso').addEventListener('click', () => {
-    mostrarFormulario('ingreso');
+document.getElementById("botonIngreso").addEventListener("click", function() {
+    document.getElementById("formulario-operacion").style.display = "block";
+    resetFormulario();
 });
 
-document.getElementById('botonEgreso').addEventListener('click', () => {
-    mostrarFormulario('egreso');
+document.getElementById("botonEgreso").addEventListener("click", function() {
+    document.getElementById("formulario-operacion").style.display = "block";
+    resetFormulario();
 });
 
-finalizarMovimientosBtn.addEventListener('click', () => {
-    operacionesDiv.style.display = 'none';
-    finalizarMovimientosBtn.style.display = 'none';
-    movimientosDiv.style.display = 'block';
+document.getElementById("realizar-operacion").addEventListener("click", function() {
+    const opcion = document.getElementById("opcion").value;
+    const valor = parseFloat(document.getElementById("valor").value);
+    let kgTotales = parseFloat(document.getElementById("kg-totales").textContent);
+
+  
+    const isIngreso = document.getElementById("botonIngreso").style.display !== "none";
+
+    if (isIngreso) {
+       
+        if (opcion === "1") { 
+            const kgPorHora = parseFloat(document.getElementById("kgPorHora").value);
+            kgTotales += kgPorHora * valor;
+        } else if (opcion === "2") { 
+            kgTotales += valor;
+        } else if (opcion === "3") { 
+            const valorKg = parseFloat(document.getElementById("valorKg").value);
+            kgTotales += valor / valorKg;
+        } else {
+            Swal.fire("Opción inválida. Ingrese 1, 2 o 3.");
+            return;
+        }
+        actualizarMovimientos(opcion, valor, true);
+    } else {
+       
+        if (opcion === "1") { 
+            const kgPorHora = parseFloat(document.getElementById("kgPorHora").value);
+            kgTotales = kgTotales-(kgPorHora * valor); 
+        } else if (opcion === "2") { 
+            kgTotales =kgTotales- valor; 
+        } else if (opcion === "3") { 
+            const valorKg = parseFloat(document.getElementById("valorKg").value);
+            kgTotales =kgTotales-( valor / valorKg)
+            Swal.fire("Opción inválida. Ingrese 1, 2 o 3.");
+            return;
+        }
+        actualizarMovimientos(opcion, valor, false); 
+    }
+
+    document.getElementById("kg-totales").textContent = kgTotales.toFixed(2);
+    document.getElementById("finalizar-movimientos").style.display = "block"; 
+
+    document.getElementById("formulario-operacion").style.display = "none"; 
 });
 
-function mostrarFormulario(tipo) {
-    formularioOperacionDiv.style.display = 'block';
-    formularioOperacionDiv.innerHTML = `
-        <p>Seleccione la opción deseada:</p>
-        <p>1 - Por horas trabajadas</p>
-        <p>2 - Por kilos</p>
-        <p>3 - Por pesos</p>
-        <input type="text" id="opcion" placeholder="Ingrese 1, 2 o 3">
-        <input type="text" id="valor" placeholder="Ingrese el valor">
-        <button id="realizar-operacion">Realizar Operación</button>
-    `;
 
-    document.getElementById('realizar-operacion').addEventListener('click', () => {
-        try {
-            const operacion = document.getElementById('opcion').value;
-            const valor = parseFloat(document.getElementById('valor').value);
+function actualizarMovimientos(opcion, valor, esIngreso) {
+    const movimientosDiv = document.getElementById("movimientos");
+    const nuevoMovimiento = document.createElement("p");
+    let tipoOperacion = "";
 
-            const operacionValida = ['1', '2', '3'].includes(operacion);
-            if (operacionValida && valor > 0) {
-                realizarOperacion(tipo, operacion, valor);
-                formularioOperacionDiv.style.display = 'none';
-                finalizarMovimientosBtn.style.display = 'block';
-                sonidoOperacion.play();
-            } else {
-                throw new Error("Operación no válida o valor incorrecto");
-            }
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.message
-            });
+    switch (opcion) {
+        case "1":
+            tipoOperacion = "Horas trabajadas";
+            break;
+        case "2":
+            tipoOperacion = "Kilos";
+            break;
+        case "3":
+            tipoOperacion = "Pesos";
+            break;
+    }
+
+    nuevoMovimiento.textContent = `Operación: ${tipoOperacion} - Valor: ${valor} ${esIngreso ? "(Ingreso)" : "(Egreso)"}`;
+    movimientosDiv.appendChild(nuevoMovimiento);
+}
+
+document.getElementById("jornada-laboral").addEventListener("click", function() {
+    const kgTotales = parseFloat(document.getElementById("kg-totales").textContent);
+    const nuevoTotal = kgTotales + 24; 
+    document.getElementById("kg-totales").textContent = nuevoTotal.toFixed(2);
+
+    actualizarMovimientos("1", "8 horas (24 kg)", true);
+
+    document.getElementById("finalizar-movimientos").style.display = "block";
+
+
+    document.getElementById("formulario-operacion").style.display = "none"; 
+});
+
+
+document.getElementById("finalizar-movimientos").addEventListener("click", function() {
+    Swal.fire({
+        title: '¿Desea finalizar los movimientos?',
+        showCancelButton: true,
+        confirmButtonText: `Finalizar`,
+        cancelButtonText: `Cancelar`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("kg-totales").textContent = "0.00";
+            document.getElementById("movimientos").innerHTML = "";
+            document.getElementById("finalizar-movimientos").style.display = "none";
+            Swal.fire('Movimientos finalizados!', '', 'success');
+
+            document.getElementById("botonIngreso").style.display = "block"; 
+            document.getElementById("botonEgreso").style.display = "block"; 
         }
     });
-}
+});
 
-function realizarOperacion(tipo, operacion, valor) {
-    let kg;
-    switch (operacion) {
-        case '1':
-            kg = valor * kgPorHora;
-            break;
-        case '2':
-            kg = valor;
-            break;
-        case '3':
-            kg = valor / valorKg;
-            break;
-        default:
-            return;
-    }
-
-    if (tipo === 'ingreso') {
-        kgTotales += kg;
-        movimientos.push({ tipo: 'Ingreso', kg: kg.toFixed(2) });
-    } else {
-        kgTotales -= kg;
-        movimientos.push({ tipo: 'Egreso', kg: kg.toFixed(2) });
-    }
-
-    actualizarMovimientos();
-}
-
-function actualizarMovimientos() {
-    kgTotalesSpan.textContent = kgTotales.toFixed(2);
-    movimientosDiv.innerHTML = "";
-    movimientos.forEach(movimiento => {
-        movimientosDiv.innerHTML += `<div>${movimiento.tipo}: ${movimiento.kg} kg</div>`;
-    });
+function resetFormulario() {
+    document.getElementById("opcion").value = "";
+    document.getElementById("valor").value = "";
 }
