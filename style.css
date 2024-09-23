@@ -1,3 +1,10 @@
+body, html {
+    overflow: auto;
+    height: 100%;
+}
+
+
+
 body {
     margin: 0;
     padding: 0;
@@ -28,7 +35,10 @@ video {
     color: white;
     max-width: 500px;
     margin: 50px auto;
+    max-height: 80vh; 
+    overflow-y: auto; 
 }
+
 
 input, button {
     display: block;
@@ -52,3 +62,98 @@ button:hover {
 h1, h2, p, h3 {
     text-align: center;
 }
+
+
+
+
+
+.video2-fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+#video-fondo2 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.capa-oscura {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(139, 69, 19, 0.5); 
+}
+
+
+
+.contenedor2 {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    background-color: rgba(139, 69, 19, 0.7);
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 50px auto;
+    color: white;
+    text-align: center;
+}
+
+.titulo2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.boton2 {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    background-color: brown;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+
+.boton2:hover {
+    background-color: burlywood;
+}
+
+.resultado {
+    margin-top: 20px;
+    text-align: left;
+    font-size: 16px;
+    color: white;
+}
+
+
+
+button {
+    background-color: brown;
+    color: white;
+}
+
+button:hover {
+    background-color: burlywood;
+}
+
+#jornada-laboral {
+    background-color: brown;
+    color: white;
+    margin-top: 10px;
+}
+
+#jornada-laboral:hover {
+    background-color: burlywood;
+}
+
